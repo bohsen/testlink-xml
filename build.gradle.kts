@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.2.61"
+    kotlin("jvm") version "1.2.70"
 }
 
 group = "dk.rn.its"
@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
+    compile("no.tornado","tornadofx", "1.7.16")
     testCompile("junit", "junit", "4.12")
 }
 
