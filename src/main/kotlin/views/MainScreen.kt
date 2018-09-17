@@ -1,9 +1,11 @@
 package views
 
+import controllers.Transformer
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
-import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
+import javafx.scene.paint.Color
+import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
@@ -19,6 +21,8 @@ class MainScreen : View("XSLT Transformer") {
 
     private lateinit var xmlInput: TextField
     private lateinit var xsltInput: TextField
+
+    val transformer: Transformer by inject()
 
     override val root = form {
         fieldset(labelPosition = Orientation.VERTICAL) {
@@ -58,17 +62,17 @@ class MainScreen : View("XSLT Transformer") {
                 useMaxWidth = true
                 action {
                     runAsyncWithProgress {
-                        TODO("Create controller class that transforms the xml")
+                        transformer.transform(File(xmlInput.text), File(xsltInput.text))
                     }
                 }
             }
         }
-//        label(loginController.statusProperty) {
-//            style {
-//                paddingTop = 10
-//                textFill = Color.RED
-//                fontWeight = FontWeight.BOLD
-//            }
-//        }
+        label(transformer.status) {
+            style {
+                paddingTop = 10
+                textFill = Color.RED
+                fontWeight = FontWeight.BOLD
+            }
+        }
     }
 }
