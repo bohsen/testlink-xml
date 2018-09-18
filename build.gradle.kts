@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+group = "dk.rn.its"
+version = "1.0-SNAPSHOT"
+
 plugins {
     java
     kotlin("jvm") version "1.2.70"
 }
-
-group = "dk.rn.its"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()

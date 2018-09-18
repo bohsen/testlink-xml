@@ -1,23 +1,20 @@
 package controllers
 
 import javafx.beans.property.SimpleStringProperty
-import tornadofx.Controller
-import tornadofx.runLater
-import views.MainScreen
-import views.TransformerScreen
+import tornadofx.*
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-
 class Transformer : Controller() {
-    private var statusProperty = SimpleStringProperty("")
+    private val statusProperty = SimpleStringProperty("")
     var status by statusProperty
 
-    fun transform(xml: File, xslt: File) {
+    fun transform(xml: File, xslt: File, result: StreamResult) {
         runLater { status = "" }
 
         // create the DOM Source
@@ -30,14 +27,14 @@ class Transformer : Controller() {
         // Create an instance of the TransformerFactory
         val transfomerFactory = TransformerFactory.newInstance()
         val transformer = transfomerFactory.newTransformer(StreamSource(xslt))
-        // An object to hold the results. It can be a file. In This example we
-        // output to console.
-        val result = StreamResult(System.out)
+                .apply {
+                    setOutputProperty(OutputKeys.INDENT, "yes")
+                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
+                }
         runLater {
             try {
                 transformer.transform(source, result)
-                find(MainScreen::class).replaceWith(TransformerScreen::class, sizeToScene = true, centerOnScreen = true)
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 status = e.message
             }
         }

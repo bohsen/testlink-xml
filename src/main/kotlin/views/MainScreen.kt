@@ -7,14 +7,18 @@ import javafx.scene.control.TextField
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
+import models.TransformerModel
 import tornadofx.*
 import java.io.File
+import java.io.StringWriter
+import javax.xml.transform.stream.StreamResult
+
 
 class MainScreen : View("XSLT Transformer") {
 
-    val model = ViewModel()
-    val xml = model.bind { SimpleStringProperty() }
-    val xslt = model.bind { SimpleStringProperty() }
+    val status: TaskStatus by inject()
+
+    val model: TransformerModel by inject()
 
     private val xmlFilter = arrayOf(FileChooser.ExtensionFilter("XML Filer (*.xml)", "*.xml"))
     private val xsltFilter = arrayOf(FileChooser.ExtensionFilter("XSLT Filer (*.xslt)", "*.xslt"))
@@ -28,7 +32,7 @@ class MainScreen : View("XSLT Transformer") {
         fieldset(labelPosition = Orientation.VERTICAL) {
             field("XSLT fil") {
                 hbox {
-                    xsltInput  = textfield(xslt) {
+                    xsltInput  = textfield(model.xslt) {
                         required(message = "Dette felt er obligatorisk")
                     }
                     button("...") {
@@ -43,7 +47,7 @@ class MainScreen : View("XSLT Transformer") {
             }
             field("XML Input Fil") {
                 hbox {
-                    xmlInput  = textfield(xml) {
+                    xmlInput  = textfield(model.xml) {
                         required(message = "Dette felt er obligatorisk")
                     }
                     button("...") {
@@ -61,8 +65,19 @@ class MainScreen : View("XSLT Transformer") {
                 isDefaultButton = true
                 useMaxWidth = true
                 action {
+                    // An object to hold the results. It can be a file.
+//                    val writer = System.out
+                    val output = StreamResult(StringWriter())
                     runAsyncWithProgress {
-                        transformer.transform(File(xmlInput.text), File(xsltInput.text))
+                        try {
+                            transformer.status = "Konverterer xml fil..."
+                            transformer.transform(File(xmlInput.text), File(xsltInput.text), output)
+                            transformer.status = "Færdig"
+                        } catch (e: Exception) {
+                            transformer.status = e.message
+                        }
+                    } ui {
+                        showDialogResult(output)
                     }
                 }
             }
@@ -74,5 +89,33 @@ class MainScreen : View("XSLT Transformer") {
                 fontWeight = FontWeight.BOLD
             }
         }
+    }
+
+    /**
+     * Opens a dialog showing the result of the xml conversion
+     */
+    private fun showDialogResult(output: StreamResult) {
+        dialog("Resultat:") {
+            val model = ViewModel()
+            val xml = model.bind { SimpleStringProperty() }
+
+            field("XML") {
+                textarea(xml) {
+                    required()
+                    text = output.writer.toString()
+                    whenDocked { requestFocus() }
+                }
+            }
+            buttonbar {
+                button("Gem").action {
+                    enableWhen(model.valid)
+                    model.commit { doSave() }
+                }
+            }
+        }
+    }
+
+    private fun doSave() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
