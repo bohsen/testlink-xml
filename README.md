@@ -1,4 +1,4 @@
-# testlink-xml
+# xslt-xml
 
 ## How to build and run
 
@@ -14,3 +14,9 @@ Now you should be up and running.
 
 1. Yet not able to save the transformed xml - [issue #2](https://github.com/bohsen/testlink-xml/issues/2)
 2. Errorhandling isn't fully implemented yet - [issue #3](https://github.com/bohsen/testlink-xml/issues/3)
+
+## Screenshots
+
+![Screenshot1](/screenshots/screenshot1.png "Main screen")
+
+![Screenshot2](/screenshots/screenshot2.png)
