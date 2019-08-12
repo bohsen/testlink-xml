@@ -7,14 +7,11 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath("no.tornado:fxlauncher-gradle-plugin:1.0.18")
-    }
 }
 
 plugins {
     java
-    kotlin("jvm") version "1.2.70"
+    kotlin("jvm") version "1.3.41"
     id("no.tornado.fxlauncher") version "1.0.20"
 }
 
@@ -33,7 +30,7 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
-    compile("no.tornado","tornadofx", "1.7.16")
+    compile("no.tornado","tornadofx", "1.7.19")
     testCompile("junit", "junit", "4.12")
 }
 

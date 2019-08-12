@@ -16,8 +16,6 @@ import javax.xml.transform.stream.StreamResult
 
 class MainScreen : View("XSLT Transformer") {
 
-    val status: TaskStatus by inject()
-
     val model: TransformerModel by inject()
 
     private val xmlFilter = arrayOf(FileChooser.ExtensionFilter("XML Filer (*.xml)", "*.xml"))
@@ -70,9 +68,7 @@ class MainScreen : View("XSLT Transformer") {
                     val output = StreamResult(StringWriter())
                     runAsyncWithProgress {
                         try {
-                            transformer.status = "Konverterer xml fil..."
                             transformer.transform(File(xmlInput.text), File(xsltInput.text), output)
-                            transformer.status = "Færdig"
                         } catch (e: Exception) {
                             transformer.status = e.message
                         }
@@ -82,7 +78,7 @@ class MainScreen : View("XSLT Transformer") {
                 }
             }
         }
-        label(transformer.status) {
+        label(transformer.statusProperty) {
             style {
                 paddingTop = 10
                 textFill = Color.RED

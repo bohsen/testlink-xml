@@ -11,7 +11,7 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
 class Transformer : Controller() {
-    private val statusProperty = SimpleStringProperty("")
+    val statusProperty = SimpleStringProperty("")
     var status by statusProperty
 
     fun transform(xml: File, xslt: File, result: StreamResult) {
@@ -31,11 +31,11 @@ class Transformer : Controller() {
                     setOutputProperty(OutputKeys.INDENT, "yes")
                     setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
                 }
-        runLater {
+        runAsync {
             try {
                 transformer.transform(source, result)
             } catch (e: Exception) {
-                status = e.message
+
             }
         }
     }
